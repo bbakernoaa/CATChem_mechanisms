@@ -9,19 +9,26 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v3
         with:
           python-version: '3.12'
+          activate-environment: music-box-env
+          auto-activate-base: false
+          use-mamba: true
 
       - name: Install MusicBox
         run: |
+          # Install MusicBox from the main branch of its repository
           pip install git+https://github.com/NCAR/music-box.git
 
       - name: Run Mechanism Tests
         run: |
-          python3 scripts/test_mechanisms.py
+          python scripts/test_mechanisms.py
